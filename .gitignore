@@ -1,0 +1,3 @@
+# Root .gitignore
+note_modules/
+.DS_Store
