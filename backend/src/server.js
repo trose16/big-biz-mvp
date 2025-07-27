@@ -6,39 +6,48 @@ const cors = require('cors');
 const app = express();
 const PORT = process.env.PORT || 5050;
 
-// Middleware
+// Middleware applied globally
+// CORS allows your frontend to communicate with the backend. Can configure it further to restrict origins, methods, etc.
 app.use(cors());
 app.use(express.json());
 
-// Database connection and sync
-(async () => {
-    try {
-        await sequelize.authenticate();
-        console.log('Postgres connection established successfully.'); // This will create the 'products' table if it doesn't exist. For development, you can use `force: true` to drop and recreate the table (remove it for production when you have real data).
-        await sequelize.sync({ force: true }); // Sync models with the database also { force: true } will drop and recreate the table for development purposes
-        console.log('Database synced successfully.');
-    } catch (error) {
-        console.error('Unable to connect to the database:', error);
-    }
-})();
+    // Database connection and sync
+    (async () => {
+        try {
+            await sequelize.authenticate();
+            console.log('Postgres connection established successfully.'); // This will create the 'products' table if it doesn't exist. For development, you can use `force: true` to drop and recreate the table (remove it for production when you have real data).
+            await sequelize.sync(); // Sync models with the database also passing { force: true } will drop and recreate the table for development purposes
+            console.log('Database synced successfully.');
+        } catch (error) {
+            console.error('Unable to connect to the database:', error);
+        }
+    })();
 
-// Basic Auth Middleware (for MVP)
-const authMiddleware = (req, res, next) => {
-    const token = req.headers.authorization; // For MVP, hardcode a simple token check or remove for public access if just testing product API
-    if (token === 'admin-token-123') {
-        next(); 
-    } else {
-        res.status(401).json({ message: 'Sorry Server says this is Unauthorized' });
-    }
-};
-
-    // Routes
+    // ***SERVER TEST*** Welcome route to test if the server is running
     app.get('/', (req, res) => {
         res.send('Welcome to the Big Biz API');
     });
 
-    // Auth Route (very basic for MVP)
+
+    // Basic Auth Middleware (for MVP)
+    const authMiddleware = (req, res, next) => {
+        const token = req.headers.authorization; 
+
+        if (token === 'admin-token-123') {
+            next(); 
+        } else {
+            res.status(401).json({ message: '**** Sorry, server says this is Unauthorized! Please check your token. ****' });
+        }
+    };
+
+
+     /*
+    ******* LOGIN AUTH ROUTE ********
+    Hardcode a simple username/password check (very basic for MVP) In production, use a proper authentication system with hashed passwords and JWTs
+    */
     app.post('/api/auth/login', (req, res) => {
+        console.log('-----LOGIN REQUEST----- See req.body', req.body);
+        // req.body is an object containing the parsed body of the request, typically used for POST requests
         const { username, password } = req.body;
         if (username === process.env.ADMIN_USERNAME && password === process.env.ADMIN_PASSWORD) {
             return res.json({ message: 'Login successful', token: 'admin-token-123' });
@@ -46,9 +55,16 @@ const authMiddleware = (req, res, next) => {
         res.status(401).json({ message: 'Invalid credentials' });
     });
 
-    // Product Routes (Protected by authMiddleware)
+
+
+    /*
+    ******* PRODUCT CRUD OPERATIONS ********
+    */
+
+    // Get All Products from DB (Protected by authMiddleware)
     app.get('/api/products', authMiddleware, async (req, res) => {
-        console.log('Fetching products from DB', req.headers);
+        console.log('------Fetching all products from DB------'); // This will log the request to fetch all products
+        console.log('------See req.headers.authorization------', req.headers.authorization); // This will log the authorization header sent with the request
         try {
             const products = await Product.findAll();
             res.json(products);
@@ -58,7 +74,9 @@ const authMiddleware = (req, res, next) => {
         }
     });
 
+    // Get single product by ID
     app.get('/api/products/:id', authMiddleware, async (req, res) => {
+        console.log('------Fetching product with ID: req.params.id------', req.params.id); // req.params is an object holding key-value pairs of the route parameters defined in the route path by a colon (:) like :id
         try {
             const product = await Product.findByPk(req.params.id);
             if (!product) return res.status(404).json({ message: 'Product not found' });
@@ -66,9 +84,12 @@ const authMiddleware = (req, res, next) => {
             } catch (err) {  
                 res.status(500).json({ message: err.message });
             } 
-        });
+    });
 
+
+    // Create a new product    
     app.post('/api/products', authMiddleware, async (req, res) => {
+        console.log('------Creating new product with data: (req.body)------ ', req.body); // req.body is an object containing the parsed body of the request, typically used for POST requests
         try {
             const newProduct = await Product.create(req.body);
             res.status(201).json(newProduct);
@@ -78,7 +99,10 @@ const authMiddleware = (req, res, next) => {
         }
     });
 
+
+    // Update a product by ID
     app.put('/api/products/:id', authMiddleware, async (req, res) => {
+        console.log('------Updating product with ID: req.params.id------', req.params.id); // req.params is an object holding key-value pairs of the route parameters defined in the route path by a colon (:) like :id
         try {
             const product = await Product.findByPk(req.params.id);
             if (!product) return res.status(404).json({ message: 'Product not found' });
