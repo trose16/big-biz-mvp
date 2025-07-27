@@ -16,7 +16,7 @@ const Product = sequelize.define('Product', {
         type: DataTypes.STRING,
         allowNull: false,
     },
-sku: {
+    sku: {
         type: DataTypes.STRING,
         allowNull: false,
         unique: true,
@@ -49,5 +49,5 @@ sku: {
     
 module.exports = {
     sequelize,
-    Product,
+    Product
 };
