@@ -15,7 +15,7 @@ app.use(express.json());
     try {
         await sequelize.authenticate();
         console.log('Postgres connection established successfully.'); // This will create the 'products' table if it doesn't exist. For development, you can use `force: true` to drop and recreate the table (remove it for production when you have real data).
-        await sequelize.sync(); // Sync models with the database
+        await sequelize.sync({ force: true }); // Sync models with the database also { force: true } will drop and recreate the table for development purposes
         console.log('Database synced successfully.');
     } catch (error) {
         console.error('Unable to connect to the database:', error);
@@ -47,7 +47,8 @@ const authMiddleware = (req, res, next) => {
     });
 
     // Product Routes (Protected by authMiddleware)
-    app.get('/api/products', async (req, res) => {
+    app.get('/api/products', authMiddleware, async (req, res) => {
+        console.log('Fetching products from DB', req.headers);
         try {
             const products = await Product.findAll();
             res.json(products);
@@ -57,7 +58,7 @@ const authMiddleware = (req, res, next) => {
         }
     });
 
-    app.get('/api/products/:id', async (req, res) => {
+    app.get('/api/products/:id', authMiddleware, async (req, res) => {
         try {
             const product = await Product.findByPk(req.params.id);
             if (!product) return res.status(404).json({ message: 'Product not found' });
@@ -67,7 +68,7 @@ const authMiddleware = (req, res, next) => {
             } 
         });
 
-    app.post('/api/products', async (req, res) => {
+    app.post('/api/products', authMiddleware, async (req, res) => {
         try {
             const newProduct = await Product.create(req.body);
             res.status(201).json(newProduct);
