@@ -83,5 +83,88 @@ export default function AdminProductsPage() {
         router.push('/login');
         console.log('handleLogout: Token removed, redirected to login.');
   };
-  
+
+    // Log rendering paths
+  if (loading) {
+    console.log('AdminProductsPage: Rendering loading state...');
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-100">
+        <p className="text-gray-700 text-lg">Loading products...</p>
+      </div>
+    );
+  }
+
+    if (error) {
+     // if there is an error page will reload rendering the error state and button to retry, helpful for user experience   
+    console.log('AdminProductsPage: Rendering error state...');
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-100">
+        <div className="bg-white p-8 rounded-lg shadow-md max-w-md">
+          <p className="text-red-500 text-lg mb-4">{error}</p>
+          <button onClick={() => {
+                console.log('AdminProductsPage: Retry button clicked.');
+                window.location.reload();
+            }}
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"> Retry </button>
+        </div>
+      </div>
+    );
+  }
+  console.log('AdminProductsPage: Rendering product table or "no products" message.');
+  console.log('Products currently in state:', products);
+
+// Main render: Display products in a table or give a helpful message if no products are found
+  return (
+    <div className="min-h-screen bg-gray-100 p-8">
+      <div className="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow-md">
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-3xl font-bold text-gray-800">Product Dashboard</h1>
+          <button
+            onClick={handleLogout}
+            className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+          >
+            Logout
+          </button>
+        </div>
+
+        {products.length === 0 ? (
+          <p className="text-gray-600 text-center text-lg">No products found. Add some!</p>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="min-w-full bg-white border border-gray-300 rounded-lg">
+              <thead>
+                <tr className="bg-gray-200 text-gray-700 uppercase text-sm leading-normal">
+                  <th className="py-3 px-6 text-left">Product Name</th>
+                  <th className="py-3 px-6 text-left">SKU</th>
+                  <th className="py-3 px-6 text-left">Brand</th>
+                  <th className="py-3 px-6 text-left">Price</th>
+                  <th className="py-3 px-6 text-left">Category</th>
+                  <th className="py-3 px-6 text-left">Active</th>
+                </tr>
+              </thead>
+              <tbody className="text-gray-600 text-sm font-light">
+                {products.map((product) => (
+                  <tr key={product.id} className="border-b border-gray-200 hover:bg-gray-100">
+                    <td className="py-3 px-6 text-left whitespace-nowrap">{product.name}</td>
+                    <td className="py-3 px-6 text-left">{product.sku}</td>
+                    <td className="py-3 px-6 text-left">{product.brand || 'N/A'}</td>
+                    <td className="py-3 px-6 text-left">${product.price?.toFixed(2) || 'N/A'}</td>
+                    <td className="py-3 px-6 text-left">{product.category || 'N/A'}</td>
+                    <td className="py-3 px-6 text-left">
+                        {product.isActive ? (
+                            <span className="bg-green-200 text-green-600 py-1 px-3 rounded-full text-xs">Yes</span>
+                        ) : (
+                            <span className="bg-red-200 text-red-600 py-1 px-3 rounded-full text-xs">No</span>
+                        )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+
   }
