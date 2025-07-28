@@ -7,7 +7,21 @@ import axios from 'axios'; // For making the API call to your backend.
 
 
 export default function AddProductPage() {
-  // TODO: Add state variables for form fields and UI messages here.
+    // --- START STATE VARIABLES ---
+  const [name, setName] = useState('');
+  const [sku, setSku] = useState('');
+  const [brand, setBrand] = useState('');
+  const [description, setDescription] = useState('');
+  const [price, setPrice] = useState(''); // Using string for input, will convert to Number for API
+  const [imageUrl, setImageUrl] = useState('');
+  const [category, setCategory] = useState('');
+  const [isActive, setIsActive] = useState(true); // Boolean for a checkbox, defaulting to true
+  const [loading, setLoading] = useState(false); // For showing a loading spinner during API call
+  const [error, setError] = useState<string | null>(null); // For displaying API call errors
+  const [success, setSuccess] = useState<string | null>(null); // For displaying success message
+
+  const router = useRouter();
+  // --- END STATE VARIABLES ---
 
   // Basic structure of a React functional component using tailwind styling.
   return (
