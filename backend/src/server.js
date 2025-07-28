@@ -46,7 +46,7 @@ app.use(express.json());
     Hardcode a simple username/password check (very basic for MVP) In production, use a proper authentication system with hashed passwords and JWTs
     */
     app.post('/api/auth/login', (req, res) => {
-        console.log('-----LOGIN REQUEST----- See req.body', req.body);
+        console.log('-----LOGIN REQUEST----- See req.body ===>', req.body);
         // req.body is an object containing the parsed body of the request, typically used for POST requests
         const { username, password } = req.body;
         if (username === process.env.ADMIN_USERNAME && password === process.env.ADMIN_PASSWORD) {
