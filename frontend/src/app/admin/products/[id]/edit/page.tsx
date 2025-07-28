@@ -57,10 +57,44 @@ export default function EditProductPage() {
       }
       console.log('---------fetchProduct: Authentication token found.');
 
-      setLoading(false); // NOTE: reset to true before the actual API call is made.
+     // Make the API call to snag the product by ID
+      try {
+        setLoading(true); // Set loading to true before the API call
+        console.log('fetchProduct: Making API call to:', `${process.env.NEXT_PUBLIC_API_URL}/products/${productId}`);
+
+        const response = await axios.get<Product>(`${process.env.NEXT_PUBLIC_API_URL}/products/${productId}`, {
+          headers: {
+            Authorization: token, // Pass the authentication token for protected route
+          },
+        });
+
+        console.log('---------fetchProduct: API call successful. Fetched product data:', response.data);
+        setProduct(response.data); // Set the fetched product data to state
+        setLoading(false); // Loading is complete
+        setError(null); // Clear any old errors
+
+      } catch (err: any) {
+        // Handle errors during API call using optional chaining '?' to access without crashing if undefined
+        console.error('---------EditProductPage: Failed to fetch product:', err.response?.status, err.message, err.response?.data);
+        
+        setError(err.response?.data?.message || '---------Failed to load product. Please check the ID or try again.');
+        setLoading(false); // Loading is complete even if there's an error
+
+        // Specific error handling based on status code
+        if (err.response?.status === 401) {
+            console.log('---------fetchProduct: Received 401. Session expired. Redirecting to login.');
+            alert('Sorry, your session expired or is unauthorized. Please log in again.');
+            localStorage.removeItem('adminToken'); // Clear invalid token
+            router.push('/login');
+        } else if (err.response?.status === 404) {
+            // If product is not found, set a specific error message
+            setError('---------Product not found with this ID. Please check the URL.');
+            console.log('---------fetchProduct: Received 404 for product ID.');
+        }
+      }
     };
 
-    fetchProduct(); // Call the async function when the component mounts.
+    fetchProduct(); // Call the async function when component mounts.
   }, [productId, router]); // Dependency Array:
                          // - productId: Re-run this effect if the ID in the URL changes.
                          // - router: Included for best practice when using router.push inside useEffect.
