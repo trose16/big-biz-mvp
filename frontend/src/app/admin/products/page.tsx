@@ -148,7 +148,7 @@ export default function AdminProductsPage() {
                     <td className="py-3 px-6 text-left whitespace-nowrap">{product.name}</td>
                     <td className="py-3 px-6 text-left">{product.sku}</td>
                     <td className="py-3 px-6 text-left">{product.brand || 'N/A'}</td>
-                    <td className="py-3 px-6 text-left">${product.price?.toFixed(2) || 'N/A'}</td>
+                    <td className="py-3 px-6 text-left">${Number(product.price)?.toFixed(2) || 'N/A'}</td>
                     <td className="py-3 px-6 text-left">{product.category || 'N/A'}</td>
                     <td className="py-3 px-6 text-left">
                         {product.isActive ? (
