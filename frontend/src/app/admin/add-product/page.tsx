@@ -82,6 +82,8 @@ export default function AddProductPage() {
       setCategory('');
       setIsActive(true); // Reset to default active state
 
+      router.push('/admin/products'); // Redirect to the dashboard to show the new product
+
     } catch (err: any) {
       // Handle errors during API call
       console.error('---------Failed to add product:', err.response?.status, err.response?.data || err.message);
