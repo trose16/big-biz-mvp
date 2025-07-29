@@ -118,6 +118,38 @@ app.use(express.json());
         }
     });
 
+    // DELETE (Remove) a product by ID
+    app.delete('/api/products/:id', authMiddleware, async (req, res) => {
+        console.log('--- DELETE PRODUCT REQUEST ---');
+        console.log('req.params (ID to delete):', req.params);
+        console.log('----------------------------');
+        try {
+            const productId = req.params.id; // Get the product ID from URL parameters
+
+            // Use Sequelize's destroy method to delete the product
+            // It returns the number of rows deleted (0 or 1 for a primary key match)
+            const deletedRowCount = await Product.destroy({
+                where: { id: productId }
+            });
+
+            if (deletedRowCount === 0) {
+                // If no rows were deleted, it means the product with that ID was not found
+                console.log(`--- DELETE PRODUCT: Product with ID ${productId} not found. ---`);
+                return res.status(404).json({ message: 'Product not found.' });
+            }
+
+            // If deletion was successful, send 204 No Content
+            console.log(`--- DELETE PRODUCT: Product with ID ${productId} deleted successfully. ---`);
+            res.status(204).send(); // Send 204 No Content
+
+        } catch (err) {
+            console.error('--- DELETE PRODUCT: Failed to delete product:', err.message, '---');
+            res.status(500).json({ message: err.message });
+        }
+    });
+
+
+
     // Start Server
     app.listen(PORT, () => {
         console.log(`Server is running on http://localhost:${PORT}`);
