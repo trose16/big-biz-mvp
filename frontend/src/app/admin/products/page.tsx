@@ -177,6 +177,12 @@ export default function AdminProductsPage() {
       <div className="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow-md">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-bold text-gray-800">Product Dashboard</h1>
+          <Link
+            href="/admin/add-product" // Links to your add product form
+            className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-300"
+          >
+            + Add New Product
+          </Link>
           <button
             onClick={handleLogout}
             className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"

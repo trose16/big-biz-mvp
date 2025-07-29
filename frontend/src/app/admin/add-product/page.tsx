@@ -48,7 +48,12 @@ export default function AddProductPage() {
       isActive,
     };
 
-    console.log('---------Sending product data:', productData);
+    // console.log('---------Sending product data:', productData);
+
+      // --- ADD THIS CONSOLE.LOG HERE ---
+  console.log('--- handleAddProduct: Data being sent to API:', productData);
+  console.log('--- handleAddProduct: Price type:', typeof productData.price, 'Value:', productData.price); // Added for clarity
+  // --- END ADDITION ---
 
     try {
       // Get auth token from local storage
