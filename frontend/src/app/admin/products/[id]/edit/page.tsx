@@ -151,11 +151,151 @@ export default function EditProductPage() {
     <div className="min-h-screen bg-gray-100 p-8">
       <div className="max-w-md mx-auto bg-white p-6 rounded-lg shadow-md">
         <h1 className="text-2xl font-bold mb-6 text-center text-gray-800">Edit Product: {product.name}</h1>
-        <p>This is where the edit form for product ID: {product.id} will be!</p>
-        <pre className="bg-gray-100 p-4 rounded text-sm overflow-auto mt-4">
-            {/* Display fetched product data in raw JSON for debugging */}
-            {JSON.stringify(product, null, 2)}
-        </pre>
+    
+        <form /*  onSubmit={handleUpdateProduct}  */ >
+          {/* Product Name */}
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="name">
+              Product Name
+            </label>
+            <input
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              id="name"
+              type="text"
+              placeholder="e.g., Tide Pods"
+              value={product.name} // Display fetched product name
+              onChange={(e) => setProduct({ ...product, name: e.target.value })} // Update local product state
+              required
+            />
+          </div>
+
+          {/* SKU */}
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="sku">
+              SKU
+            </label>
+            <input
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              id="sku"
+              type="text"
+              placeholder="e.g., TPODS-ULTRA-OXI-123"
+              value={product.sku} // Display fetched SKU
+              onChange={(e) => setProduct({ ...product, sku: e.target.value })} // Update local product state
+              required
+            />
+          </div>
+
+          {/* Brand */}
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="brand">
+              Brand
+            </label>
+            <input
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              id="brand"
+              type="text"
+              placeholder="e.g., Tide"
+              value={product.brand || ''} // Use || '' to handle potential undefined/null from API
+              onChange={(e) => setProduct({ ...product, brand: e.target.value })}
+            />
+          </div>
+
+          {/* Description */}
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="description">
+              Description
+            </label>
+            <textarea
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              id="description"
+              rows={3}
+              placeholder="Detailed product description..."
+              value={product.description || ''} // Use || '' to handle potential undefined/null
+              onChange={(e) => setProduct({ ...product, description: e.target.value })}
+            ></textarea>
+          </div>
+
+          {/* Price */}
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="price">
+              Price
+            </label>
+            <input
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              id="price"
+              type="number"
+              step="0.01"
+              placeholder="e.g., 19.99"
+              value={Number(product.price)?.toFixed(2) || ''} // Format for display, or empty string
+              onChange={(e) => setProduct({ ...product, price: e.target.value as any })} // Type assertion for price
+              required
+            />
+          </div>
+
+          {/* Image URL */}
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="imageUrl">
+              Image URL
+            </label>
+            <input
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              id="imageUrl"
+              type="text"
+              placeholder="e.g., https://example.com/product.jpg"
+              value={product.imageUrl || ''} // Use || ''
+              onChange={(e) => setProduct({ ...product, imageUrl: e.target.value })}
+            />
+          </div>
+
+          {/* Category */}
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="category">
+              Category
+            </label>
+            <input
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              id="category"
+              type="text"
+              placeholder="e.g., Laundry Detergent"
+              value={product.category || ''} // Use || ''
+              onChange={(e) => setProduct({ ...product, category: e.target.value })}
+            />
+          </div>
+
+          {/* isActive Checkbox */}
+          <div className="mb-6 flex items-center">
+            <input
+              className="mr-2 leading-tight"
+              id="isActive"
+              type="checkbox"
+              checked={product.isActive || false} // Use || false to handle potential undefined/null
+              onChange={(e) => setProduct({ ...product, isActive: e.target.checked })}
+            />
+            <label className="text-gray-700 text-sm font-bold" htmlFor="isActive">
+              Is Active (Product visible)
+            </label>
+          </div>
+
+          {/* Submit Button */}
+          <div className="flex items-center justify-between">
+            <button
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full"
+              type="submit"
+            >
+              Update Product
+            </button>
+          </div>
+        </form>
+
+        {/* Back to dashboard button */}
+        <div className="mt-4 text-center">
+          <button
+            onClick={() => router.push('/admin/products')}
+            className="text-blue-500 hover:text-blue-700 text-sm font-bold"
+          >
+            Back to Dashboard
+          </button>
+        </div>
       </div>
     </div>
   );
