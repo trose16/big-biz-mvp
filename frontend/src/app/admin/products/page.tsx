@@ -84,6 +84,62 @@ export default function AdminProductsPage() {
         console.log('handleLogout: Token removed, redirected to login.');
   };
 
+  // --- START DELETE FUNCTION ---
+    const handleDeleteProduct = async (productIdToDelete: string) => {
+    // User expereince best practice: Confirm before deleting
+    const confirmDelete = window.confirm('Are you sure you want to delete this product? This action cannot be undone.');
+    if (!confirmDelete) {
+      console.log('---------Delete cancelled by user.');
+      return; // Stop if user cancels
+    }
+
+    console.log('---------handleDeleteProduct: Attempting to delete product with ID:', productIdToDelete, '---');
+    setLoading(true); // Show loading state while deleting
+    setError(null);   // Clear previous errors
+
+    try {
+      // Auth Check: Get token
+      const token = localStorage.getItem('adminToken');
+      if (!token) {
+        setError('No authentication token found. Please log in again.');
+        setLoading(false);
+        router.push('/login');
+        return;
+      }
+      console.log('---------handleDeleteProduct: Token found. Making DELETE API call.');
+
+      // Make the API call to delete the product
+      const response = await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/products/${productIdToDelete}`, {
+        headers: {
+          Authorization: token, // Pass the authorization token
+        },
+      });
+
+      // Successful deletion (return 204 No Content response)
+      console.log(`--- Product with ID ${productIdToDelete} deleted successfully. ---`);
+      alert('Product deleted successfully!');
+
+      // 5. Refresh the product list on the dashboard
+      // Call the fetchProducts function again to get the updated list
+      // We need access to fetchProducts, so we'll adjust useEffect in the next step to expose it.
+      // For now, we can just reload the window, but we'll refine this.
+      window.location.reload(); // Temporary reload, we'll make this smoother!
+
+    } catch (err: any) {
+      // Error Handling
+      console.error('--- handleDeleteProduct: Failed to delete product:', err.response?.status, err.message, err.response?.data, '---');
+      setError(err.response?.data?.message || 'Failed to delete product. Please try again.');
+      setLoading(false); // End loading state
+
+      if (err.response?.status === 401) {
+          alert('Session expired or unauthorized. Please log in again.');
+          localStorage.removeItem('adminToken');
+          router.push('/login');
+      }
+    }
+  };
+  // --- END handleDeleteProduct FUNCTION ---
+
     // Log rendering paths
   if (loading) {
     console.log('AdminProductsPage: Rendering loading state...');
@@ -113,6 +169,7 @@ export default function AdminProductsPage() {
   console.log('AdminProductsPage: Rendering product table or "no products" message.');
   console.log('Products currently in state:', products);
 
+
 // Main render: Display products in a table or give a helpful message if no products are found
   return (
     <div className="min-h-screen bg-gray-100 p-8">
@@ -140,8 +197,7 @@ export default function AdminProductsPage() {
                   <th className="py-3 px-6 text-left">Price</th>
                   <th className="py-3 px-6 text-left">Category</th>
                   <th className="py-3 px-6 text-left">Active</th>
-                  <th className="py-3 px-6 text-center">Actions</th> {/* Text-center for button alignment */}
-
+                  <th className="py-3 px-6 text-center">Actions</th>{/* Text-center for button alignment */}
                 </tr>
               </thead>
               <tbody className="text-gray-600 text-sm font-light">
@@ -160,12 +216,7 @@ export default function AdminProductsPage() {
                         )}
                     </td>
                     <td className="py-3 px-6 text-center">
-                      <button
-                        // We'll add onClick={handleDeleteProduct} here in the next step
-                        className="bg-red-600 hover:bg-red-700 text-white font-bold py-1 px-3 rounded text-xs focus:outline-none focus:shadow-outline"
-                      >
-                        Delete
-                      </button>
+                      <button onClick={() => handleDeleteProduct(product.id)} className="bg-red-600 hover:bg-red-700 text-white font-bold py-1 px-3 rounded text-xs focus:outline-none focus:shadow-outline"> Delete </button>
                     </td>
                   </tr>
                 ))}
@@ -176,5 +227,3 @@ export default function AdminProductsPage() {
       </div>
     </div>
   );
-
-  }
