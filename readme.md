@@ -131,8 +131,9 @@ npm run dev
 
 If this were a real product here are some of the things I'd prioritize to get this into production as a true testable PoC. 
 
-Backend Refactoring:
-Modularize server.js: Separate core application logic into dedicated controllers/ and routes/ files (as planned and partially implemented for authentication), further enhancing the MVC pattern and maintainability.
+### Backend Refactoring:
+
+* Modularize server.js: Separate core application logic into dedicated controllers/ and routes/ files (as planned and partially implemented for authentication), further enhancing the MVC pattern and maintainability.
 
 * Dedicated Model Files: Ensure each Sequelize model resides in its own file (Product.js, etc.).
 
