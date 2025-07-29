@@ -8,6 +8,9 @@ This project is a **Full-Stack Product Information Management (PIM) Mini-MVP**, 
 #### 🚶🏽‍♀️🚶🏻 Guided Walkthrough —-> [See My Project Demo Walkthrough Loom](https://www.loom.com/share/00bf6949bc374797bdba38451a92079b?sid=9af58e6d-804e-4781-a695-a9df266f808b)
 
 
+___
+
+
 ### 🎯 Project Goal & Learning Focus
 * **Code-First & Developer Workflow:** As I'm a Product Manager with a background in Software Architecture I wanted a project that flexed my dev skills again. Things like clean command-line interface (CLI) driven development, clear Git commit history, and a disciplined, iterative coding process and Single Responsibility MVC codebase. 
 
