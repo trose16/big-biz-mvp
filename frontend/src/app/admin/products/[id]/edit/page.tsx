@@ -101,6 +101,16 @@ export default function EditProductPage() {
 
   // --- END useEffect BLOCK ---
 
+  // Conditional Rendering: Show user the loading state
+  if (loading) {
+    console.log('--- EditProductPage: Rendering loading state... ---'); // Log to see this path taken
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-100">
+        <p className="text-gray-700 text-lg">Loading product details...</p>
+      </div>
+    );
+  }
+
   // Basic return to show something is rendering for now.
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
