@@ -145,6 +145,8 @@ If this were a real product here are some of the things I'd prioritize to get th
 
 ### Advanced Frontend UI/UX:
 
+* Make it prettier. Ya know I started as a designer so I'd want the entire experience to be more asthetically pleasing in terms of look and feel. As of now it's pretty utilitarian. 
+
 * Implement image uploads (frontend to backend) instead of just URL links.
 
 * Add client-side form validation for a smoother user experience.
