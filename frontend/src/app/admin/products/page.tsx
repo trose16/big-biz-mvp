@@ -140,6 +140,8 @@ export default function AdminProductsPage() {
                   <th className="py-3 px-6 text-left">Price</th>
                   <th className="py-3 px-6 text-left">Category</th>
                   <th className="py-3 px-6 text-left">Active</th>
+                  <th className="py-3 px-6 text-center">Actions</th> {/* Text-center for button alignment */}
+
                 </tr>
               </thead>
               <tbody className="text-gray-600 text-sm font-light">
@@ -156,6 +158,14 @@ export default function AdminProductsPage() {
                         ) : (
                             <span className="bg-red-200 text-red-600 py-1 px-3 rounded-full text-xs">No</span>
                         )}
+                    </td>
+                    <td className="py-3 px-6 text-center">
+                      <button
+                        // We'll add onClick={handleDeleteProduct} here in the next step
+                        className="bg-red-600 hover:bg-red-700 text-white font-bold py-1 px-3 rounded text-xs focus:outline-none focus:shadow-outline"
+                      >
+                        Delete
+                      </button>
                     </td>
                   </tr>
                 ))}
