@@ -50,7 +50,7 @@ This application provides a fully functional administrative interface for managi
 * **Admin Product Detail View (`/admin/products/[id]/view`):**
     * A dynamic page providing a visually appealing, detailed display for a single product, including images and full descriptions. Designed with a "high-end website" aesthetic in mind.
 
-### 🏗️ Microservice Drive Architecture & Approach
+### 🛠️ Microservice Drive Architecture & Approach
 
 The project adheres to a **decoupled (API-driven) architecture** with clear separation between the frontend and backend:
 
@@ -127,7 +127,9 @@ Run Frontend Server:
 npm run dev
 ```
 
-### Ideally, What's Next? / Future Enhancements
+### 🧐 Ideally, What's Next? / Future PoC Enhancements
+
+If this were a real product here are some of the things I'd prioritize to get this into production as a true testable PoC. 
 
 Backend Refactoring:
 Modularize server.js: Separate core application logic into dedicated controllers/ and routes/ files (as planned and partially implemented for authentication), further enhancing the MVC pattern and maintainability.
