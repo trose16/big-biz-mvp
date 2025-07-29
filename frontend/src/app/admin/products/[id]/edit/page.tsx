@@ -88,7 +88,7 @@ export default function EditProductPage() {
             router.push('/login');
         } else if (err.response?.status === 404) {
             // If product is not found, set a specific error message
-            setError('---------Product not found with this ID. Please check the URL.');
+            setError('Sorry about that! Product not found with this ID. Please check the URL.');
             console.log('---------fetchProduct: Received 404 for product ID.');
         }
       }
@@ -111,10 +111,52 @@ export default function EditProductPage() {
     );
   }
 
-  // Basic return to show something is rendering for now.
+    
+  // Conditional Rendering: Show error state
+  if (error) {
+    console.log('--- EditProductPage: Rendering error state... ---'); // Log to see this path taken
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-100">
+        <div className="bg-white p-8 rounded-lg shadow-md max-w-md">
+          <p className="text-red-500 text-lg mb-4">{error}</p>
+          <button
+            onClick={() => {
+                console.log('--- EditProductPage: Retry button clicked. ---');
+                window.location.reload(); // Simple reload to re-attempt fetch
+            }}
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          >
+            Retry
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // Conditional Rendering: Handle no product data (e.g., after a 404 error but no specific 'error' message yet)
+  if (!product) {
+    console.log('--- EditProductPage: Loading finished, no error, but product is null/not found. ---');
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-100">
+        <p className="text-gray-700 text-lg">No product data available or product not found.</p>
+      </div>
+    );
+  }
+ 
+ 
+    console.log('--- EditProductPage: Rendering product details... ---'); 
+
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <p>Loading edit page, edit fx coming soon...</p>
+    <div className="min-h-screen bg-gray-100 p-8">
+      <div className="max-w-md mx-auto bg-white p-6 rounded-lg shadow-md">
+        <h1 className="text-2xl font-bold mb-6 text-center text-gray-800">Edit Product: {product.name}</h1>
+        <p>This is where the edit form for product ID: {product.id} will be!</p>
+        <pre className="bg-gray-100 p-4 rounded text-sm overflow-auto mt-4">
+            {/* Display fetched product data in raw JSON for debugging */}
+            {JSON.stringify(product, null, 2)}
+        </pre>
+      </div>
     </div>
   );
 }
