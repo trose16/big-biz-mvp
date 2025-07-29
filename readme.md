@@ -1,4 +1,5 @@
-# Big Biz PIM MVP: Full-Stack Product Management Demo
+# Big Biz PIM MVP 
+## Full-Stack Product Management Demo
 
 ### 🚀 Overview: Showcasing Full-Stack Aptitude & Product-Centric Development
 
