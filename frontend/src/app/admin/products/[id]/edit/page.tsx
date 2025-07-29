@@ -27,6 +27,8 @@ export default function EditProductPage() {
   const [error, setError] = useState<string | null>(null); // Error message state. Initially null.
   const router = useRouter(); // Hook to access router object for navigation (e.g., redirecting).
   const params = useParams(); // Hook to get dynamic route parameters from the URL.
+  const [success, setSuccess] = useState<string | null>(null); // <-- This line: State to track successful updates, initially null.
+
 
   // Get 'id' from URL params. Matches folder named '[id]', so the param will be 'id' then convert it to string as URL params are always strings.
   const productId = Array.isArray(params.id) ? params.id[0] : params.id;
@@ -99,7 +101,90 @@ export default function EditProductPage() {
                          // - productId: Re-run this effect if the ID in the URL changes.
                          // - router: Included for best practice when using router.push inside useEffect.
 
-  // --- END useEffect BLOCK ---
+  // --- END useEffect hook BLOCK ---
+
+
+
+  const handleUpdateProduct = async (e: React.FormEvent) => {
+    console.log('--- handleUpdateProduct: Function started. ---'); // Log 1: Function entry
+    e.preventDefault();
+
+    setError(null);
+    setSuccess(null);
+    setLoading(true);
+
+    // --- TEMPORARILY SIMPLIFY THIS SECTION FOR DEBUGGING ---
+    // Make sure 'product' is not null here before trying to access its properties
+    if (!product) {
+        console.error('--- handleUpdateProduct: ERROR: Product state is null when trying to update! ---'); // Log 2: Product null check
+        setError('Cannot update: product data is missing.');
+        setLoading(false);
+        return;
+    }
+
+    const updatedData = {
+      name: product.name, // Direct access, as we know product is not null now
+      sku: product.sku,
+      brand: product.brand || undefined,
+      description: product.description || undefined,
+      // Convert price back to a number before sending to API
+      // Ensure product.price exists before attempting parseFloat
+      price: product.price !== undefined && product.price !== null ? parseFloat(String(product.price)) : undefined,
+      imageUrl: product.imageUrl || undefined,
+      category: product.category || undefined,
+      isActive: product.isActive,
+    };
+    console.log('--- handleUpdateProduct: Prepared updatedData:', updatedData); // Log Prepared data
+
+
+    // Make the API call to update the product to update the backend DB
+    try {
+      const token = localStorage.getItem('adminToken');
+      if (!token) {
+        setError('No authentication token found. Please log in again.');
+        setLoading(false);
+        router.push('/login');
+        return;
+      }
+      console.log('Using token:', token);
+
+      const response = await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/products/${productId}`, updatedData, {
+        headers: {
+          Authorization: token,
+        },
+      });
+
+      console.log('Product updated successfully:', response.data);
+      setSuccess('Product updated successfully!');
+
+    } catch (err: any) {
+      console.error('Failed to update product:', err.response?.status, err.response?.data || err.message);
+      setError(err.response?.data?.message || 'Failed to update product. Please check your inputs.');
+      
+      if (err.response?.status === 401) {
+          alert('Session expired or unauthorized. Please log in again.');
+          localStorage.removeItem('adminToken');
+          router.push('/login');
+      }
+    } finally {
+      setLoading(false);
+    }
+
+    setLoading(false); // Make sure loading is false so we don't get stuck
+    setSuccess('DEBUG: Form submission handled (API call skipped).'); // Add this to see success if it reaches here
+  };
+  // --- END handleUpdateProduct FUNCTION ---
+
+
+
+
+
+
+
+
+
+
+
 
   // Conditional Rendering: Show user the loading state
   if (loading) {
@@ -152,7 +237,7 @@ export default function EditProductPage() {
       <div className="max-w-md mx-auto bg-white p-6 rounded-lg shadow-md">
         <h1 className="text-2xl font-bold mb-6 text-center text-gray-800">Edit Product: {product.name}</h1>
     
-        <form /*  onSubmit={handleUpdateProduct}  */ >
+        <form onSubmit={handleUpdateProduct} >
           {/* Product Name */}
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="name">
@@ -195,7 +280,7 @@ export default function EditProductPage() {
               id="brand"
               type="text"
               placeholder="e.g., Tide"
-              value={product.brand || ''} // Use || '' to handle potential undefined/null from API
+              value={product.brand || ''} // Use || '' to handle undefined/null from API
               onChange={(e) => setProduct({ ...product, brand: e.target.value })}
             />
           </div>
@@ -210,7 +295,7 @@ export default function EditProductPage() {
               id="description"
               rows={3}
               placeholder="Detailed product description..."
-              value={product.description || ''} // Use || '' to handle potential undefined/null
+              value={product.description || ''} // Use || '' to handle undefined/null
               onChange={(e) => setProduct({ ...product, description: e.target.value })}
             ></textarea>
           </div>
@@ -227,7 +312,7 @@ export default function EditProductPage() {
               step="0.01"
               placeholder="e.g., 19.99"
               value={Number(product.price)?.toFixed(2) || ''} // Format for display, or empty string
-              onChange={(e) => setProduct({ ...product, price: e.target.value as any })} // Type assertion for price
+              onChange={(e) => setProduct({ ...product, price: e.target.value as any })} // Cast to 'any' to allow string input, but ensure it's a number
               required
             />
           </div>

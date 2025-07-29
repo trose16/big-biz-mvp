@@ -102,7 +102,11 @@ app.use(express.json());
 
     // Update a product by ID
     app.put('/api/products/:id', authMiddleware, async (req, res) => {
+        console.log('--- PUT PRODUCT REQUEST ---');
         console.log('------Updating product with ID: req.params.id------', req.params.id); // req.params is an object holding key-value pairs of the route parameters defined in the route path by a colon (:) like :id
+        console.log('req.params (ID to update):', req.params);
+        console.log('req.body (Updated Data):', req.body);
+        console.log('-------------------------');
         try {
             const product = await Product.findByPk(req.params.id);
             if (!product) return res.status(404).json({ message: 'Product not found' });
