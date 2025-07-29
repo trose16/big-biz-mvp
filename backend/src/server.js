@@ -1,8 +1,11 @@
-require('dotenv').config({ path: './.env' }); // Load environment variables from .env file
+// backend/src/server.js
+
+require('dotenv').config({ path: './.env' });
 const express = require('express');
-const { sequelize } = require('./config/database'); // Import sequelize only
-const Product = require('./models/Product'); // <-- Import Product model directly
+const { sequelize } = require('./config/database');
+const Product = require('./models/Product');
 const cors = require('cors');
+const authRoutes = require('./routes/authRoutes'); // Import new auth router
 
 const app = express();
 const PORT = process.env.PORT || 5050;
@@ -29,6 +32,9 @@ app.use(express.json());
         res.send('Welcome to the Big Biz API');
     });
 
+    // Mount the authentication routes under the /api/auth path
+    app.use('/api/auth', authRoutes);
+
 
     // Basic Auth Middleware (for MVP)
     const authMiddleware = (req, res, next) => {
@@ -40,22 +46,6 @@ app.use(express.json());
             res.status(401).json({ message: '**** Sorry, server says this is Unauthorized! Please check your token. ****' });
         }
     };
-
-
-     /*
-    ******* LOGIN AUTH ROUTE ********
-    Hardcode a simple username/password check (very basic for MVP) In production, use a proper authentication system with hashed passwords and JWTs
-    */
-    app.post('/api/auth/login', (req, res) => {
-        console.log('-----LOGIN REQUEST----- See req.body ===>', req.body);
-        // req.body is an object containing the parsed body of the request, typically used for POST requests
-        const { username, password } = req.body;
-        if (username === process.env.ADMIN_USERNAME && password === process.env.ADMIN_PASSWORD) {
-            return res.json({ message: 'Login successful', token: 'admin-token-123' });
-        }
-        res.status(401).json({ message: 'Invalid credentials' });
-    });
-
 
 
     /*
