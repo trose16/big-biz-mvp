@@ -4,6 +4,7 @@
 import { useState, useEffect } from 'react'; // <-- React Hooks for state and side effects
 import { useRouter } from 'next/navigation'; // <-- Next.js Hook for navigation
 import axios from 'axios'; // <-- HTTP client for API calls to the backend
+import Link from 'next/link'; // <-- Link to see individual product details
 
 
 
@@ -203,7 +204,10 @@ export default function AdminProductsPage() {
               <tbody className="text-gray-600 text-sm font-light">
                 {products.map((product) => (
                   <tr key={product.id} className="border-b border-gray-200 hover:bg-gray-100">
-                    <td className="py-3 px-6 text-left whitespace-nowrap">{product.name}</td>
+                    <td className="py-3 px-6 text-left whitespace-nowrap">
+                      <Link href={`/admin/products/${product.id}/view`} // This is the new dynamic URL
+                    className="text-blue-600 hover:text-blue-800 hover:underline font-medium">{product.name}</Link>
+                    </td>
                     <td className="py-3 px-6 text-left">{product.sku}</td>
                     <td className="py-3 px-6 text-left">{product.brand || 'N/A'}</td>
                     <td className="py-3 px-6 text-left">${Number(product.price)?.toFixed(2) || 'N/A'}</td>
