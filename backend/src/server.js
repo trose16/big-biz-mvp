@@ -1,6 +1,7 @@
 require('dotenv').config({ path: './.env' }); // Load environment variables from .env file
 const express = require('express');
-const { sequelize, Product } = require('./config/database');
+const { sequelize } = require('./config/database'); // Import sequelize only
+const Product = require('./models/Product'); // <-- Import Product model directly
 const cors = require('cors');
 
 const app = express();
