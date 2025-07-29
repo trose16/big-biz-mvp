@@ -220,6 +220,11 @@ export default function AdminProductsPage() {
                         )}
                     </td>
                     <td className="py-3 px-6 text-center">
+                      {/* Edit Product */}
+                      <Link href={`/admin/products/${product.id}/edit`} // Link to the edit page
+                        className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-1 px-3 rounded text-xs focus:outline-none focus:shadow-outline mr-2 mb-4 block">Edit</Link>
+
+                      {/* Delete Product */}
                       <button onClick={() => handleDeleteProduct(product.id)} className="bg-red-600 hover:bg-red-700 text-white font-bold py-1 px-3 rounded text-xs focus:outline-none focus:shadow-outline"> Delete </button>
                     </td>
                   </tr>
